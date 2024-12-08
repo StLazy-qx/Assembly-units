@@ -11,9 +11,9 @@ public class KnightMover : MonoBehaviour
     private Vector3 _beginPosition;
     private Rigidbody _rigidbody;
     private float _distanceToTarget = 0.1f;
-    private float _rotationSpeed = 50f;
+    private float _rotationSpeed = 30f;
     private float _angleRotation = 45f;
-    private float _moveSpeed = 30f;
+    private float _moveSpeed = 25f;
     private float _forwardDistance;
     private float _maxPassDistance = 2f;
     private bool _obstacleDetected;
@@ -106,7 +106,7 @@ public class KnightMover : MonoBehaviour
         if (Physics.Raycast(_checkPoint.position, transform.forward, 
             out RaycastHit hit, 1.5f))
         {
-            if (hit.collider.gameObject.TryGetComponent<Base>(out _))
+            if (hit.collider.gameObject.TryGetComponent<Building>(out _))
                 return true;
         }
 
