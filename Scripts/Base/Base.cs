@@ -3,22 +3,13 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    private readonly string _layerName = "Base";
-    private readonly int _animationSearchCoin = Animator.StringToHash("ClickOnBase");
-
     [SerializeField] private KnightPool _knightPool;
     [SerializeField] private CoinPool _coinPool;
     [SerializeField] private Animator _animator;
 
-    private int _keyCheckResources = 0;
+    private readonly int _animationSearchCoin = Animator.StringToHash("ClickOnBase");
 
     public event Action<int> ResourcesSearching;
-
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(_keyCheckResources))
-            PerformResourceSearch();
-    }
 
     private void CollectResources()
     {
@@ -41,27 +32,6 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void PerformResourceSearch()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
-        {
-            if (hitInfo.collider.gameObject.layer == LayerMask.NameToLayer(_layerName))
-            {
-                Animator targetAnimator = hitInfo.collider.GetComponent<Animator>();
-
-                if (targetAnimator != null)
-                {
-                    targetAnimator.SetTrigger(_animationSearchCoin);
-                    ResourcesSearching?.Invoke(_coinPool.CountActivatedObjects());
-
-                    CollectResources();
-                }
-            }
-        }
-    }
-
     private Vector3 GetGroundPosition(Vector3 position)
     {
         Ray ray = new Ray(position, Vector3.down);
@@ -70,5 +40,16 @@ public class Base : MonoBehaviour
             return hit.point;
 
         return Vector3.zero;
+    }
+
+    public void PerformResourceSearch()
+    {
+        if (_animator != null)
+        {
+            _animator.SetTrigger(_animationSearchCoin);
+            ResourcesSearching?.Invoke(_coinPool.CountActivatedObjects());
+
+            CollectResources();
+        }
     }
 }

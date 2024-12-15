@@ -4,32 +4,43 @@ using UnityEngine;
 
 public class CameraOperator : MonoBehaviour
 {
+    [SerializeField] private InputReader _inputReader;
+    [SerializeField] private Base _base;
     [SerializeField] private float _moveSpeed = 8f;
     [SerializeField] private float _minX = -30f;
     [SerializeField] private float _minZ = -17f;
     [SerializeField] private float _maxX = 30f;
     [SerializeField] private float _maxZ = 30f;
 
-    private Vector3 _movementInput;
-    private float _deltaMove = 0.01f;
-    private readonly string _horizontalCameraMove = "Horizontal";
-    private readonly string _verticalCameraMove = "Vertical";
-
-    void Update()
+    private readonly string _layerName = "Base";
+    private Camera _mainCamera;
+  
+    private void Awake()
     {
-        CheckGetMove();
+        _mainCamera = Camera.main;
+        _inputReader.ClickKeyPressing += OnBaseCLick;
+        _inputReader.HorizontalKeyPressing += OnHorizontalInput;
+        _inputReader.VerticalKeyPressing += OnVerticalInput;
     }
 
-    private void CheckGetMove()
+    private void OnDisable()
     {
-        float moveX = Input.GetAxis(_horizontalCameraMove);
-        float moveZ = Input.GetAxis(_verticalCameraMove);
+        _inputReader.ClickKeyPressing -= OnBaseCLick;
+        _inputReader.HorizontalKeyPressing -= OnHorizontalInput;
+        _inputReader.VerticalKeyPressing -= OnVerticalInput;
+    }
 
-        if (Mathf.Abs(moveX) > _deltaMove || Mathf.Abs(moveZ) > _deltaMove)
+    private void OnBaseCLick()
+    {
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
-            _movementInput = new Vector3(-moveX, 0f, -moveZ);
-
-            MoveCamera(_movementInput);
+            if (hitInfo.collider.gameObject.layer 
+                == LayerMask.NameToLayer(_layerName))
+            {
+                _base.PerformResourceSearch();
+            }
         }
     }
 
@@ -40,5 +51,19 @@ public class CameraOperator : MonoBehaviour
         newPosition.x = Mathf.Clamp(newPosition.x, _minX, _maxX);
         newPosition.z = Mathf.Clamp(newPosition.z, _minZ, _maxZ);
         transform.position = newPosition;
+    }
+
+    private void OnHorizontalInput(float horizontalInput)
+    {
+        Vector3 movement = new Vector3(-horizontalInput, 0f, 0f);
+
+        MoveCamera(movement);
+    }
+
+    private void OnVerticalInput(float verticalInput)
+    {
+        Vector3 movement = new Vector3(0f, 0f, -verticalInput);
+
+        MoveCamera(movement);
     }
 }

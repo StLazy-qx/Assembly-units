@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Knight : ObjectablePoll
 {
+    [field: SerializeField]
+    public Transform HoldPoint { get; private set; }
+
     private Coin _coin;
     private readonly string _layerName = "Knight";
 
@@ -12,6 +15,7 @@ public class Knight : ObjectablePoll
         IsBusy = false;
         _coin = null;
         gameObject.layer = LayerMask.NameToLayer(_layerName);
+
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer(_layerName), 
             LayerMask.NameToLayer(_layerName));
     }
@@ -26,17 +30,12 @@ public class Knight : ObjectablePoll
         IsBusy = false;
     }
 
-    public bool HasCoin()
-    {
-        return _coin != null;
-    }
+    public bool HasCoin() => _coin != null;
 
     public void PickUpCoin(Coin coin)
     {
-        if (HasCoin() == false)
-        {
+        if (HasCoin() == false && coin != null)
             _coin = coin;
-        }
     }
 
     public Coin LayOutResource()
@@ -44,6 +43,8 @@ public class Knight : ObjectablePoll
         if (HasCoin())
         {
             Coin tempCoin = _coin;
+
+            _coin.StopFollowing();
             _coin = null;
 
             return tempCoin;

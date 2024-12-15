@@ -11,7 +11,7 @@ public class CoinPool : Pool<Coin>
     {
         foreach (Coin coin in ObjectsPool)
         {
-            if (coin.IsActive)
+            if (coin.IsActive && coin.IsHolded == false)
             {
                 Transform targetCoin = coin.transform;
 
