@@ -5,6 +5,7 @@ public class Knight : ObjectablePoll
     [SerializeField] private Transform _holdPoint;
 
     private readonly string _layerName = "Knight";
+
     private Coin _currentCoin;
     private Wallet _wallet;
     private Vector3 _initialPosition;

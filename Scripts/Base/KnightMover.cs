@@ -12,19 +12,18 @@ public class KnightMover : MonoBehaviour
     private Vector3 _beginPosition;
     private Rigidbody _rigidbody;
     private float _moveSpeed = 25f;
-    private float _rotationSpeed = 100f;
+    private float _rotationSpeed = 10f;
     private float _distanceToTarget = 0.15f;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-
-        _obstacleHandler.Init(_rigidbody, _rotationSpeed, _moveSpeed);
     }
 
     private void Start()
     {
         _beginPosition = transform.position;
+        _obstacleHandler.Init(_rigidbody, _moveSpeed);
     }
 
     private IEnumerator MoveToTargetAndBack(Coin coin)

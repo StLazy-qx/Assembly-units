@@ -5,11 +5,11 @@ public class ObstacleMoveHandler : MonoBehaviour
 {
     private Rigidbody _rigidbody;
     private float _moveSpeed;
-    private float _rotationSpeed;
-    private float _angleRotation = 45f;
+    private float _rotationSpeed = 100f;
+    private float _angleRotation = 60f;
     private float _distanceToTarget = 1f;
-    private float _maxAvoidanceDistance = 0.5f;
-    private float _detectObstacleDistance = 2f;
+    private float _maxAvoidanceDistance = 3f;
+    private float _detectObstacleDistance = 1f;
 
     private Quaternion GetAvoidanceRotation(RaycastHit hit)
     {
@@ -48,11 +48,10 @@ public class ObstacleMoveHandler : MonoBehaviour
         }
     }
 
-    public void Init(Rigidbody rigidbody, float moveSpeed, float rotationSpeed)
+    public void Init(Rigidbody rigidbody, float moveSpeed)
     {
         _rigidbody = rigidbody;
         _moveSpeed = moveSpeed;
-        _rotationSpeed = rotationSpeed;
     }
 
     public bool IsObstacleOnWay(Transform checkPoint, out RaycastHit hit)

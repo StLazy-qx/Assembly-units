@@ -5,7 +5,7 @@ public class KnightSpawner : Spawner<Knight>
 {
     [SerializeField] private Wallet _wallet;
 
-    private float _distanceBetweenPoint = 1f;
+    private float _distanceBetweenPoint = 0.3f;
 
     private List<Vector3> _spawnPoints = new List<Vector3>();
 
