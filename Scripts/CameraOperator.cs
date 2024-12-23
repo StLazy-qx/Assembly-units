@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraOperator : MonoBehaviour
 {
-    [SerializeField] private InputReader _inputReader;
+    [SerializeField] private PlayerInput _inputReader;
     [SerializeField] private Base _base;
     [SerializeField] private float _moveSpeed = 8f;
     [SerializeField] private float _minX = -30f;
@@ -18,16 +18,16 @@ public class CameraOperator : MonoBehaviour
     private void Awake()
     {
         _mainCamera = Camera.main;
-        _inputReader.ClickKeyPressing += OnBaseCLick;
-        _inputReader.HorizontalKeyPressing += OnHorizontalInput;
-        _inputReader.VerticalKeyPressing += OnVerticalInput;
+        _inputReader.MapCoinChecking += OnBaseCLick;
+        _inputReader.HorizontalamCameraMoving += OnHorizontalInput;
+        _inputReader.VerticalCameraMoving += OnVerticalInput;
     }
 
     private void OnDisable()
     {
-        _inputReader.ClickKeyPressing -= OnBaseCLick;
-        _inputReader.HorizontalKeyPressing -= OnHorizontalInput;
-        _inputReader.VerticalKeyPressing -= OnVerticalInput;
+        _inputReader.MapCoinChecking -= OnBaseCLick;
+        _inputReader.HorizontalamCameraMoving -= OnHorizontalInput;
+        _inputReader.VerticalCameraMoving -= OnVerticalInput;
     }
 
     private void OnBaseCLick()

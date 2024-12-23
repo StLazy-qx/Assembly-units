@@ -7,7 +7,7 @@ public static class Vector3Extensions
         return (end - start).sqrMagnitude;
     }
 
-    public static bool IsEnoughClose(this Vector3 start, Vector3 end, float distance)
+    public static bool IsEnoughClose(this Vector3 start, Vector3 end, float distance = 0.01f)
     {
         return start.SqrDistance(end) <= distance * distance;
     }

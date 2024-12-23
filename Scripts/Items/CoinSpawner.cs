@@ -1,84 +1,93 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class CoinSpawner : Spawner<CoinPool, Coin>
+public class CoinSpawner : Spawner<Coin>
 {
     [SerializeField] private float _cooldown;
-    [SerializeField] private Transform _base;
+    [SerializeField] private Base _base;
+    [SerializeField] private float _distanceAroundBase = 8f;
 
     private float _heightSpawned = 0.8f;
-    private float _distanceAroundBase = 8f;
     private WaitForSeconds _delay;
+    private HashSet<Coin> _activeCoins = new HashSet<Coin>();
 
-    private List<Vector3> _spawnPoints = new List<Vector3>();
-
-    private void Awake()
+    protected override void OnAwake()
     {
         _delay = new WaitForSeconds(_cooldown);
-        DistanceBetweenPoint = 3f;
-        Vector3 spawnScale = SpawnPlace.localScale;
-        Vector3 spawnPosition = SpawnPlace.position;
-        MinAreaX = spawnPosition.x - (spawnScale.x * Half);
-        MaxAreaX = spawnPosition.x + (spawnScale.x * Half);
-        MinAreaZ = spawnPosition.z - (spawnScale.z * Half);
-        MaxAreaZ = spawnPosition.z + (spawnScale.z * Half);
-
-        Pool.Initialize();
     }
 
     private void Start()
     {
-        StartCoroutine(Spawned());
-    }
-
-    private IEnumerator Spawned()
-    {
-        while (Pool.IsAllObjectsActive() == false)
-        {
-            yield return _delay;
-
-            OutputObjects();
-        }
+        StartCoroutine(PerformProduction());
     }
 
     protected override void OutputObjects()
     {
-        Vector3 newPoint;
+        Vector3 spawnPosition = DetermineSpawnCoordinate();
 
-        do
+        if (IsValidPoint(spawnPosition))
         {
-            newPoint = DetermineSpawnCoordinate();
+            Vector3 newPostion = new Vector3(spawnPosition.x, 
+                _heightSpawned, spawnPosition.z);
+            PoolObjects.GetObject(newPostion);
         }
-        while (IsPointValid(newPoint) == false);
-
-        _spawnPoints.Add(newPoint);
-        GetObject(newPoint);
     }
 
-    private bool IsPointValid(Vector3 point)
+    private IEnumerator PerformProduction()
     {
-        if (_base == null)
-            return true;
-
-        if (Vector3.Distance(_base.transform.position, point) < _distanceAroundBase)
-            return false;
-
-        foreach (Vector3 existingPoint in _spawnPoints)
+        while (PoolObjects.IsAllObjectsActive() == false)
         {
-            if (Vector3.Distance(existingPoint, point) < DistanceBetweenPoint)
-                return false;
-        }
+            OutputObjects();
 
-        return true;
+            yield return _delay;
+        }
     }
 
-    private Vector3 DetermineSpawnCoordinate()
+    private bool IsValidPoint(Vector3 point)
     {
-        return new Vector3(
-            Random.Range(MinAreaX, MaxAreaX),
-            _heightSpawned,
-            Random.Range(MinAreaZ, MaxAreaZ)
-        );
+        return (Vector3.Distance(_base.transform.position, point) 
+            >= _distanceAroundBase);
+    }
+
+    private void ReleaseOldCoins()
+    {
+        int maxActiveCoins = 3;
+
+        if (_activeCoins.Count > maxActiveCoins)
+        {
+            var coinsToRemove = _activeCoins.Take
+                (_activeCoins.Count - maxActiveCoins).ToList();
+
+            foreach (var coin in coinsToRemove)
+            {
+                _activeCoins.Remove(coin);
+            }
+        }
+    }
+
+    public Coin GetNextCoin()
+    {
+        List<Coin> tempList = PoolObjects.GetListActiceObjects();
+
+        foreach (Coin coin in tempList)
+        {
+            if (_activeCoins.Contains(coin) == false)
+            {
+                _activeCoins.Add(coin);
+                
+                return coin;
+            }
+        }
+
+        ReleaseOldCoins();
+
+        return null;
+    }
+
+    public int CountDeliveredCoins()
+    {
+        return PoolObjects.CountActivatedObjects();
     }
 }

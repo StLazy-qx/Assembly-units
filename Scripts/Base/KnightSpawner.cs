@@ -1,27 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KnightSpawner : Spawner<KnightPool, Knight>
+public class KnightSpawner : Spawner<Knight>
 {
+    [SerializeField] private Wallet _wallet;
+
+    private float _distanceBetweenPoint = 1f;
+
     private List<Vector3> _spawnPoints = new List<Vector3>();
-
-    private void Awake()
-    {
-        DistanceBetweenPoint = 0.25f;
-
-        if (SpawnPlace.TryGetComponent(out BoxCollider boxCollider))
-        {
-            Vector3 size = boxCollider.size;
-            Vector3 center = boxCollider.center;
-            Vector3 spawnPosition = SpawnPlace.position;
-            MinAreaX = spawnPosition.x + center.x - size.x * Half;
-            MaxAreaX = spawnPosition.x + center.x + size.x * Half;
-            MinAreaZ = spawnPosition.z + center.z - size.z * Half;
-            MaxAreaZ = spawnPosition.z + center.z + size.z * Half;
-        }
-        
-        Pool.Initialize();
-    }
 
     private void Start()
     {
@@ -34,7 +20,9 @@ public class KnightSpawner : Spawner<KnightPool, Knight>
 
         foreach (Vector3 position in _spawnPoints)
         {
-            GetObject(position);
+            Knight knight = PoolObjects.GetObject(position);
+
+            knight.Initialize(_wallet, position);
         }
     }
 
@@ -42,7 +30,7 @@ public class KnightSpawner : Spawner<KnightPool, Knight>
     {
         _spawnPoints.Clear();
 
-        for (int i = 0; i < Pool.Count; i++)
+        for (int i = 0; i < PoolObjects.Count; i++)
         {
             Vector3 newPoint = DetermineSpawnCoordinate();
 
@@ -57,16 +45,26 @@ public class KnightSpawner : Spawner<KnightPool, Knight>
     {
         foreach (Vector3 existingPoint in _spawnPoints)
         {
-            if (Vector3.Distance(existingPoint, point) < DistanceBetweenPoint)
+            if (Vector3.Distance(existingPoint, point) < _distanceBetweenPoint)
                 return false;
         }
 
         return true;
     }
 
-    private Vector3 DetermineSpawnCoordinate()
+    public void SendKnightToResource(Coin target)
     {
-        return new Vector3(Random.Range(MinAreaX, MaxAreaX),
-            SpawnPlace.position.y, Random.Range(MinAreaZ, MaxAreaZ));
+        foreach (Knight knight in PoolObjects.GetListActiceObjects())
+        {
+            if (knight.IsBusy == false)
+            {
+                if (knight.TryGetComponent(out KnightMover knightMover))
+                {
+                    knightMover.GoToTarget(target);
+
+                    return;
+                }
+            }
+        }
     }
 }

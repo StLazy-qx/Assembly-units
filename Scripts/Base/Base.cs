@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    [SerializeField] private KnightPool _knightPool;
-    [SerializeField] private CoinPool _coinPool;
+    [SerializeField] private KnightSpawner _spawner; 
+    [SerializeField] private MapScanner _mapScanner;
     [SerializeField] private Animator _animator;
 
     private readonly int _animationSearchCoin = Animator.StringToHash("ClickOnBase");
@@ -13,43 +13,18 @@ public class Base : MonoBehaviour
 
     private void CollectResources()
     {
-        if (_coinPool.CountActivatedObjects() <= 0)
-            return;
+        Coin coinTarget = _mapScanner.GetNextCoin();
 
-        if (_knightPool.IsFreeKnight() == false)
-            return;
-
-        Transform coinPosition = _coinPool.GetPositionCoin();
-
-        if (coinPosition != null)
-        {
-            Vector3 groundPosition = GetGroundPosition(coinPosition.position);
-
-            if (groundPosition != Vector3.zero)
-            {
-                _knightPool.OrderToMove(groundPosition);
-            }
-        }
-    }
-
-    private Vector3 GetGroundPosition(Vector3 position)
-    {
-        Ray ray = new Ray(position, Vector3.down);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-            return hit.point;
-
-        return Vector3.zero;
+        if (coinTarget != null)
+            _spawner.SendKnightToResource(coinTarget);
     }
 
     public void PerformResourceSearch()
     {
         if (_animator != null)
-        {
             _animator.SetTrigger(_animationSearchCoin);
-            ResourcesSearching?.Invoke(_coinPool.CountActivatedObjects());
 
-            CollectResources();
-        }
+        CollectResources();
+        ResourcesSearching?.Invoke(_mapScanner.ShowNumberCoins());
     }
 }

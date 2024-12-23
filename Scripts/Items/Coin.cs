@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Coin : ObjectablePoll
@@ -5,12 +6,9 @@ public class Coin : ObjectablePoll
     [SerializeField] private float _speedRotation;
 
     private bool _isRotating;
-    private bool _isHolded;
-    private Transform _followTarget;
+    private Transform _coinPoolContaner;
     private Quaternion _beginRotation = Quaternion.Euler(90f, 0f, 0f);
     private Quaternion _layRotation = Quaternion.Euler(0f, 0f, 0f);
-
-    public bool IsHolded => _isHolded;
 
     private void Start()
     {
@@ -21,34 +19,11 @@ public class Coin : ObjectablePoll
     {
         if (_isRotating)
             Rotate();
-
-        if (_followTarget != null)
-        {
-            LayDown();
-
-            transform.position = _followTarget.position;
-        }
-    }
-
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.TryGetComponent(out Knight knight))
-        {
-            if (knight.HasCoin())
-                return;
-
-            knight.PickUpCoin(this);
-            SetFollowTarget(knight.HoldPoint);
-
-            _isHolded = true;
-        }
     }
 
     private void SetBeginState()
     {
         transform.rotation = _beginRotation;
-        _followTarget = null;
-        _isHolded = false;
         _isRotating = true;
     }
 
@@ -57,20 +32,22 @@ public class Coin : ObjectablePoll
         transform.Rotate(Vector3.forward * _speedRotation * Time.deltaTime);
     }
 
-    private void LayDown()
+    public void StopHolded()
     {
-        _isRotating = false;
-        transform.rotation = _layRotation;
-    }
-
-    private void SetFollowTarget(Transform target)
-    {
-        _followTarget = target;
-    }
-
-    public void StopFollowing()
-    {
+        transform.SetParent(_coinPoolContaner.transform);
         SetBeginState();
         Deactivate();
+    }
+
+    public void Initialize(Transform contaner)
+    {
+        _coinPoolContaner = contaner;
+    }
+
+    public void SetHoldState(Vector3 position)
+    {
+        _isRotating = false;
+        transform.position = position;
+        transform.rotation = _layRotation;
     }
 }

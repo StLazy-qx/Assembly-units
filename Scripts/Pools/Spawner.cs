@@ -1,21 +1,43 @@
 using UnityEngine;
 
-public abstract class Spawner<T,N> : MonoBehaviour where T : Pool<N> where N : ObjectablePoll
+public abstract class Spawner<T> : MonoBehaviour where T: ObjectablePoll
 {
-    [SerializeField] protected T Pool;
-    [SerializeField] protected Transform SpawnPlace;
+    [SerializeField] protected Pool<T> PoolObjects;
 
-    protected float MinAreaX;
-    protected float MaxAreaX;
-    protected float MinAreaZ;
-    protected float MaxAreaZ;
-    protected float Half = 0.5f;
-    protected float DistanceBetweenPoint;
+    [SerializeField] private Transform _spawnPlace;
+
+    private float _minAreaX;
+    private float _maxAreaX;
+    private float _minAreaZ;
+    private float _maxAreaZ;
+    private const float Half = 0.5f;
+
+    private void Awake()
+    {
+        InitializeAreaBounds();
+        PoolObjects.Initialize();
+        OnAwake();
+    }
+
+    protected Vector3 DetermineSpawnCoordinate()
+    {
+        return new Vector3(
+            Random.Range(_minAreaX, _maxAreaX),
+            _spawnPlace.position.y,
+            Random.Range(_minAreaZ, _maxAreaZ));
+    }
+
+    protected virtual void OnAwake() { }
 
     protected abstract void OutputObjects();
 
-    protected N GetObject(Vector3 position)
+    private void InitializeAreaBounds()
     {
-        return Pool.GetObject(position);
+        Vector3 spawnScale = _spawnPlace.localScale;
+        Vector3 spawnPosition = _spawnPlace.position;
+        _minAreaX = spawnPosition.x - (spawnScale.x * Half);
+        _maxAreaX = spawnPosition.x + (spawnScale.x * Half);
+        _minAreaZ = spawnPosition.z - (spawnScale.z * Half);
+        _maxAreaZ = spawnPosition.z + (spawnScale.z * Half);
     }
 }

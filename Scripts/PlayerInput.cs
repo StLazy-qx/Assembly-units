@@ -1,31 +1,32 @@
 using System;
 using UnityEngine;
 
-public class InputReader : MonoBehaviour
+public class PlayerInput : MonoBehaviour
 {
     private readonly string _horizontalCameraMove = "Horizontal";
     private readonly string _verticalCameraMove = "Vertical";
-    private int _keyClick = 0;
+
+    private int _KeyCheckResourcesOnMap = 0;
     private float _deltaMove = 0.01f;
 
-    public event Action ClickKeyPressing;
-    public event Action<float> HorizontalKeyPressing;
-    public event Action<float> VerticalKeyPressing;
+    public event Action MapCoinChecking;
+    public event Action<float> HorizontalamCameraMoving;
+    public event Action<float> VerticalCameraMoving;
 
     private void Update()
     {
         float moveX = Input.GetAxis(_horizontalCameraMove);
         float moveZ = Input.GetAxis(_verticalCameraMove);
 
-        if (Input.GetMouseButtonDown(_keyClick))
+        if (Input.GetMouseButtonDown(_KeyCheckResourcesOnMap))
         {
-            ClickKeyPressing?.Invoke();
+            MapCoinChecking?.Invoke();
         }
 
         if (Mathf.Abs(moveX) > _deltaMove || Mathf.Abs(moveZ) > _deltaMove)
         {
-            HorizontalKeyPressing?.Invoke(moveX);
-            VerticalKeyPressing?.Invoke(moveZ);
+            HorizontalamCameraMoving?.Invoke(moveX);
+            VerticalCameraMoving?.Invoke(moveZ);
         }
     }
 }

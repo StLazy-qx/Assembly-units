@@ -12,7 +12,7 @@ public class Pool<T> : MonoBehaviour where T : ObjectablePoll
 
     public int Count => ObjectsPool.Count;
 
-    protected T CreateNewObject()
+    protected virtual T CreateNewObject()
     {
         T newObj = Instantiate(Template, Container);
 
@@ -20,6 +20,13 @@ public class Pool<T> : MonoBehaviour where T : ObjectablePoll
         ObjectsPool.Add(newObj);
 
         return newObj;
+    }
+
+    private void ActivateObject(T obj, Vector3 position)
+    {
+        obj.transform.position = position;
+
+        obj.Activate();
     }
 
     public void Initialize()
@@ -30,12 +37,35 @@ public class Pool<T> : MonoBehaviour where T : ObjectablePoll
 
     public T GetObject(Vector3 position)
     {
-        T newObj = ObjectsPool.FirstOrDefault(obj => !obj.IsActive);
+        T newObj = ObjectsPool.FirstOrDefault(obj => obj.IsActive == false);
 
-        newObj.Activate();
-        newObj.transform.position = position;
+        if (newObj == null)
+        {
+            newObj = CreateNewObject();
+        }
+
+        ActivateObject(newObj, position);
 
         return newObj;
+    }
+
+    public T GetFirstActiveObject()
+    {
+        return ObjectsPool.FirstOrDefault(obj => obj.IsActive == true);
+    }
+
+    public List<T> GetListActiceObjects()
+    {
+        List<T> tempList = new List<T>();
+
+        foreach (T obj in ObjectsPool)
+        {
+            if (obj.IsActive)
+            {
+                tempList.Add(obj);
+            }
+        }
+        return tempList;
     }
 
     public int CountActivatedObjects()

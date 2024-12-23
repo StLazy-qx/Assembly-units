@@ -2,22 +2,29 @@ using UnityEngine;
 
 public class Knight : ObjectablePoll
 {
-    [field: SerializeField]
-    public Transform HoldPoint { get; private set; }
+    [SerializeField] private Transform _holdPoint;
 
-    private Coin _coin;
     private readonly string _layerName = "Knight";
+    private Coin _currentCoin;
+    private Wallet _wallet;
+    private Vector3 _initialPosition;
 
     public bool IsBusy { get; private set; }
 
     private void Awake()
     {
         IsBusy = false;
-        _coin = null;
+        _currentCoin = null;
         gameObject.layer = LayerMask.NameToLayer(_layerName);
 
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer(_layerName), 
             LayerMask.NameToLayer(_layerName));
+    }
+
+    public void Initialize(Wallet wallet, Vector3 position)
+    {
+        _wallet = wallet;
+        _initialPosition = position;
     }
 
     public void ToBusy()
@@ -25,31 +32,22 @@ public class Knight : ObjectablePoll
         IsBusy = true;
     }
 
-    public void ToFree()
-    {
-        IsBusy = false;
-    }
-
-    public bool HasCoin() => _coin != null;
+    public bool HasCoin() => _currentCoin != null;
 
     public void PickUpCoin(Coin coin)
     {
-        if (HasCoin() == false && coin != null)
-            _coin = coin;
+        coin.transform.SetParent(_holdPoint);
+        coin.SetHoldState(_holdPoint.position);
+
+        _currentCoin = coin;
     }
 
-    public Coin LayOutResource()
+    public void DropOffCoin()
     {
-        if (HasCoin())
-        {
-            Coin tempCoin = _coin;
+        _currentCoin.StopHolded();
+        _wallet.AddCoin();
 
-            _coin.StopFollowing();
-            _coin = null;
-
-            return tempCoin;
-        }
-
-        return null;
+        IsBusy = false;
+        _currentCoin = null;
     }
 }
