@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class ObjectablePoll : MonoBehaviour
+public abstract class PoolableObject : MonoBehaviour
 {
     public bool IsActive => gameObject.activeSelf;
 

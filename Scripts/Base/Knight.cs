@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Knight : ObjectablePoll
+public class Knight : PoolableObject
 {
     [SerializeField] private Transform _holdPoint;
 

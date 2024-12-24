@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Pool<T> : MonoBehaviour where T : ObjectablePoll
+public class Pool<T> : MonoBehaviour where T : PoolableObject
 {
     [SerializeField] protected T Template;
     [SerializeField] protected Transform Container;
@@ -14,19 +14,19 @@ public class Pool<T> : MonoBehaviour where T : ObjectablePoll
 
     protected virtual T CreateNewObject()
     {
-        T newObj = Instantiate(Template, Container);
+        T newSubject = Instantiate(Template, Container);
 
-        newObj.Deactivate();
-        ObjectsPool.Add(newObj);
+        newSubject.Deactivate();
+        ObjectsPool.Add(newSubject);
 
-        return newObj;
+        return newSubject;
     }
 
-    private void ActivateObject(T obj, Vector3 position)
+    private void ActivateObject(T subject, Vector3 position)
     {
-        obj.transform.position = position;
+        subject.transform.position = position;
 
-        obj.Activate();
+        subject.Activate();
     }
 
     public void Initialize()
@@ -37,32 +37,32 @@ public class Pool<T> : MonoBehaviour where T : ObjectablePoll
 
     public T GetObject(Vector3 position)
     {
-        T newObj = ObjectsPool.FirstOrDefault(obj => obj.IsActive == false);
+        T newSubject = ObjectsPool.FirstOrDefault(subject => subject.IsActive == false);
 
-        if (newObj == null)
+        if (newSubject == null)
         {
-            newObj = CreateNewObject();
+            newSubject = CreateNewObject();
         }
 
-        ActivateObject(newObj, position);
+        ActivateObject(newSubject, position);
 
-        return newObj;
+        return newSubject;
     }
 
     public T GetFirstActiveObject()
     {
-        return ObjectsPool.FirstOrDefault(obj => obj.IsActive == true);
+        return ObjectsPool.FirstOrDefault(subject => subject.IsActive == true);
     }
 
     public List<T> GetListActiceObjects()
     {
         List<T> tempList = new List<T>();
 
-        foreach (T obj in ObjectsPool)
+        foreach (T subject in ObjectsPool)
         {
-            if (obj.IsActive)
+            if (subject.IsActive)
             {
-                tempList.Add(obj);
+                tempList.Add(subject);
             }
         }
         return tempList;
@@ -70,11 +70,11 @@ public class Pool<T> : MonoBehaviour where T : ObjectablePoll
 
     public int CountActivatedObjects()
     {
-        return ObjectsPool.Count(obj => obj.IsActive);
+        return ObjectsPool.Count(subject => subject.IsActive);
     }
 
     public bool IsAllObjectsActive()
     {
-        return ObjectsPool.All(target => target.IsActive);
+        return ObjectsPool.All(subject => subject.IsActive);
     }
 }

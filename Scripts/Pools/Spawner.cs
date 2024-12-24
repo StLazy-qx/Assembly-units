@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Spawner<T> : MonoBehaviour where T: ObjectablePoll
+public abstract class Spawner<T> : MonoBehaviour where T: PoolableObject
 {
     [SerializeField] protected Pool<T> PoolObjects;
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Coin : ObjectablePoll
+public class Coin : PoolableObject
 {
     [SerializeField] private float _speedRotation;
 

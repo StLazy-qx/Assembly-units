@@ -2,12 +2,12 @@ public class CoinPool : Pool<Coin>
 {
     protected override Coin CreateNewObject()
     {
-        Coin newObj = Instantiate(Template, Container);
+        Coin newCoin = Instantiate(Template, Container);
 
-        newObj.Initialize(Container);
-        newObj.Deactivate();
-        ObjectsPool.Add(newObj);
+        newCoin.Initialize(Container);
+        newCoin.Deactivate();
+        ObjectsPool.Add(newCoin);
 
-        return newObj;
+        return newCoin;
     }
 }
