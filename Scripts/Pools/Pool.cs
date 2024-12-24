@@ -14,12 +14,12 @@ public class Pool<T> : MonoBehaviour where T : PoolableObject
 
     protected virtual T CreateNewObject()
     {
-        T newSubject = Instantiate(Template, Container);
+        T newObject = Instantiate(Template, Container);
 
-        newSubject.Deactivate();
-        ObjectsPool.Add(newSubject);
+        newObject.Deactivate();
+        ObjectsPool.Add(newObject);
 
-        return newSubject;
+        return newObject;
     }
 
     private void ActivateObject(T subject, Vector3 position)
@@ -37,21 +37,16 @@ public class Pool<T> : MonoBehaviour where T : PoolableObject
 
     public T GetObject(Vector3 position)
     {
-        T newSubject = ObjectsPool.FirstOrDefault(subject => subject.IsActive == false);
+        T newObject = ObjectsPool.FirstOrDefault(subject => subject.IsActive == false);
 
-        if (newSubject == null)
+        if (newObject == null)
         {
-            newSubject = CreateNewObject();
+            newObject = CreateNewObject();
         }
 
-        ActivateObject(newSubject, position);
+        ActivateObject(newObject, position);
 
-        return newSubject;
-    }
-
-    public T GetFirstActiveObject()
-    {
-        return ObjectsPool.FirstOrDefault(subject => subject.IsActive == true);
+        return newObject;
     }
 
     public List<T> GetListActiceObjects()
@@ -66,6 +61,11 @@ public class Pool<T> : MonoBehaviour where T : PoolableObject
             }
         }
         return tempList;
+    }
+
+    public T GetFirstActiveObject()
+    {
+        return ObjectsPool.FirstOrDefault(subject => subject.IsActive == true);
     }
 
     public int CountActivatedObjects()
