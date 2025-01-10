@@ -1,8 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-
 public class KnightMover : MonoBehaviour
 {
     [SerializeField] private Knight _knight;

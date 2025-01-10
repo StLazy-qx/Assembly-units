@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class KnightSpawner : Spawner<Knight>
@@ -22,7 +23,7 @@ public class KnightSpawner : Spawner<Knight>
         {
             Knight knight = PoolObjects.GetObject(position);
 
-            knight.Initialize(_wallet, position);
+            knight.Initialize(_wallet);
         }
     }
 
@@ -52,19 +53,19 @@ public class KnightSpawner : Spawner<Knight>
         return true;
     }
 
-    public void SendKnightToResource(Coin target)
+    public void SendUnitToResource(Knight knight, Coin target)
     {
-        foreach (Knight knight in PoolObjects.GetListActiceObjects())
+        if (knight.TryGetComponent(out KnightMover knightMover))
         {
-            if (knight.IsBusy == false)
-            {
-                if (knight.TryGetComponent(out KnightMover knightMover))
-                {
-                    knightMover.GoToTarget(target);
-
-                    return;
-                }
-            }
+            knightMover.GoToTarget(target);
         }
+    }
+
+    public bool TryGetFreeUnit(out Knight knight)
+    {
+        knight = PoolObjects.GetListActiveObjects().
+            FirstOrDefault(knight => knight.IsBusy == false);
+
+        return knight != null;
     }
 }

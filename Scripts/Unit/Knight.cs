@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Knight : PoolableObject
@@ -8,7 +10,6 @@ public class Knight : PoolableObject
 
     private Coin _currentCoin;
     private Wallet _wallet;
-    private Vector3 _initialPosition;
 
     public bool IsBusy { get; private set; }
 
@@ -18,22 +19,19 @@ public class Knight : PoolableObject
         _currentCoin = null;
         gameObject.layer = LayerMask.NameToLayer(_layerName);
 
-        Physics.IgnoreLayerCollision(LayerMask.NameToLayer(_layerName), 
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer(_layerName),
             LayerMask.NameToLayer(_layerName));
     }
 
-    public void Initialize(Wallet wallet, Vector3 position)
+    public void Initialize(Wallet wallet)
     {
         _wallet = wallet;
-        _initialPosition = position;
     }
 
     public void ToBusy()
     {
         IsBusy = true;
     }
-
-    public bool HasCoin() => _currentCoin != null;
 
     public void PickUpCoin(Coin coin)
     {

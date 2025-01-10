@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CameraOperator : MonoBehaviour
 {
-    [SerializeField] private PlayerInput _inputReader;
+    [SerializeField] private LayerMask _targetLayer;
+    [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private Base _base;
     [SerializeField] private float _moveSpeed = 8f;
     [SerializeField] private float _minX = -30f;
@@ -12,22 +13,21 @@ public class CameraOperator : MonoBehaviour
     [SerializeField] private float _maxX = 30f;
     [SerializeField] private float _maxZ = 30f;
 
-    private readonly string _layerName = "Base";
     private Camera _mainCamera;
-  
+
     private void Awake()
     {
         _mainCamera = Camera.main;
-        _inputReader.MapCoinChecking += OnBaseCLick;
-        _inputReader.HorizontalamCameraMoving += OnHorizontalInput;
-        _inputReader.VerticalCameraMoving += OnVerticalInput;
+        _playerInput.MapCoinChecking += OnBaseCLick;
+        _playerInput.HorizontalamCameraMoving += OnHorizontalInput;
+        _playerInput.VerticalCameraMoving += OnVerticalInput;
     }
 
     private void OnDisable()
     {
-        _inputReader.MapCoinChecking -= OnBaseCLick;
-        _inputReader.HorizontalamCameraMoving -= OnHorizontalInput;
-        _inputReader.VerticalCameraMoving -= OnVerticalInput;
+        _playerInput.MapCoinChecking -= OnBaseCLick;
+        _playerInput.HorizontalamCameraMoving -= OnHorizontalInput;
+        _playerInput.VerticalCameraMoving -= OnVerticalInput;
     }
 
     private void OnBaseCLick()
@@ -36,8 +36,7 @@ public class CameraOperator : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
-            if (hitInfo.collider.gameObject.layer 
-                == LayerMask.NameToLayer(_layerName))
+            if (((1 << hitInfo.collider.gameObject.layer) & _targetLayer) != 0)
             {
                 _base.PerformResourceSearch();
             }
@@ -46,7 +45,7 @@ public class CameraOperator : MonoBehaviour
 
     private void MoveCamera(Vector3 movement)
     {
-        Vector3 newPosition = transform.position + movement 
+        Vector3 newPosition = transform.position + movement
             * _moveSpeed * Time.deltaTime;
         newPosition.x = Mathf.Clamp(newPosition.x, _minX, _maxX);
         newPosition.z = Mathf.Clamp(newPosition.z, _minZ, _maxZ);

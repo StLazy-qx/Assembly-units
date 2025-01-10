@@ -1,21 +1,23 @@
 using UnityEngine;
 
-public abstract class Spawner<T> : MonoBehaviour where T: PoolableObject
+public abstract class Spawner<T> : MonoBehaviour where T : PoolableObject
 {
-    [SerializeField] protected Pool<T> PoolObjects;
+    private const float Half = 0.5f;
 
+    [SerializeField] private Pool<T> _poolObjects;
     [SerializeField] private Transform _spawnPlace;
 
     private float _minAreaX;
     private float _maxAreaX;
     private float _minAreaZ;
     private float _maxAreaZ;
-    private const float Half = 0.5f;
+
+    protected Pool<T> PoolObjects => _poolObjects;
 
     private void Awake()
     {
         InitializeAreaBounds();
-        PoolObjects.Initialize();
+        _poolObjects.Initialize();
         OnAwake();
     }
 

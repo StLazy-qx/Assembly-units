@@ -3,28 +3,29 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    [SerializeField] private KnightSpawner _spawner; 
-    [SerializeField] private MapScanner _mapScanner;
+    [SerializeField] private KnightSpawner _spawner;
+    [SerializeField] private ResourceHandler _mapScanner;
     [SerializeField] private Animator _animator;
 
     private readonly int _animationSearchCoin = Animator.StringToHash("ClickOnBase");
 
     public event Action<int> ResourcesSearching;
 
-    private void CollectResources()
+    private void AssignResourceKnight()
     {
-        Coin coinTarget = _mapScanner.GetNextCoin();
+        if (_spawner.TryGetFreeUnit(out Knight freeKnight) == false)
+            return;
+
+        Coin coinTarget = _mapScanner.DequeueItem();
 
         if (coinTarget != null)
-            _spawner.SendKnightToResource(coinTarget);
+            _spawner.SendUnitToResource(freeKnight, coinTarget);
     }
 
     public void PerformResourceSearch()
     {
-        if (_animator != null)
-            _animator.SetTrigger(_animationSearchCoin);
-
-        CollectResources();
-        ResourcesSearching?.Invoke(_mapScanner.ShowNumberCoins());
+        _animator.SetTrigger(_animationSearchCoin);
+        AssignResourceKnight();
+        ResourcesSearching?.Invoke(_mapScanner.CoinCount);
     }
 }

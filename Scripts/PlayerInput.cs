@@ -6,7 +6,7 @@ public class PlayerInput : MonoBehaviour
     private readonly string _horizontalCameraMove = "Horizontal";
     private readonly string _verticalCameraMove = "Vertical";
 
-    private int _KeyCheckResourcesOnMap = 0;
+    private int _keyCheckResourcesOnMap = 0;
     private float _deltaMove = 0.01f;
 
     public event Action MapCoinChecking;
@@ -18,7 +18,7 @@ public class PlayerInput : MonoBehaviour
         float moveX = Input.GetAxis(_horizontalCameraMove);
         float moveZ = Input.GetAxis(_verticalCameraMove);
 
-        if (Input.GetMouseButtonDown(_KeyCheckResourcesOnMap))
+        if (Input.GetMouseButtonDown(_keyCheckResourcesOnMap))
         {
             MapCoinChecking?.Invoke();
         }

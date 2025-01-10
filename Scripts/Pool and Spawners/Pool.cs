@@ -4,20 +4,24 @@ using UnityEngine;
 
 public class Pool<T> : MonoBehaviour where T : PoolableObject
 {
-    [SerializeField] protected T Template;
-    [SerializeField] protected Transform Container;
-    [SerializeField] protected int Capacity;
+    [SerializeField] private T _template;
+    [SerializeField] private Transform _container;
+    [SerializeField] private int _capacity;
 
-    protected List<T> ObjectsPool = new List<T>();
+    private List<T> _objectsPool = new List<T>();
 
-    public int Count => ObjectsPool.Count;
+    protected T Template => _template;
+    protected List<T> ObjectsPool => _objectsPool;
+    protected Transform Container => _container;
+    protected int Capacity => _capacity;
+    public int Count => _objectsPool.Count;
 
     protected virtual T CreateNewObject()
     {
-        T newObject = Instantiate(Template, Container);
+        T newObject = Instantiate(_template, _container);
 
         newObject.Deactivate();
-        ObjectsPool.Add(newObject);
+        _objectsPool.Add(newObject);
 
         return newObject;
     }
@@ -31,50 +35,44 @@ public class Pool<T> : MonoBehaviour where T : PoolableObject
 
     public void Initialize()
     {
-        for (int i = 0; i < Capacity; i++)
+        for (int i = 0; i < _capacity; i++)
             CreateNewObject();
     }
 
     public T GetObject(Vector3 position)
     {
-        T newObject = ObjectsPool.FirstOrDefault(subject => subject.IsActive == false);
+        T newObject = _objectsPool.FirstOrDefault(subject => subject.IsActive == false);
 
         if (newObject == null)
-        {
             newObject = CreateNewObject();
-        }
 
         ActivateObject(newObject, position);
 
         return newObject;
     }
 
-    public List<T> GetListActiceObjects()
+    public List<T> GetListActiveObjects()
     {
         List<T> tempList = new List<T>();
 
-        foreach (T subject in ObjectsPool)
+        foreach (T subject in _objectsPool)
         {
             if (subject.IsActive)
             {
                 tempList.Add(subject);
             }
         }
-        return tempList;
-    }
 
-    public T GetFirstActiveObject()
-    {
-        return ObjectsPool.FirstOrDefault(subject => subject.IsActive == true);
+        return tempList;
     }
 
     public int CountActivatedObjects()
     {
-        return ObjectsPool.Count(subject => subject.IsActive);
+        return _objectsPool.Count(subject => subject.IsActive);
     }
 
     public bool IsAllObjectsActive()
     {
-        return ObjectsPool.All(subject => subject.IsActive);
+        return _objectsPool.All(subject => subject.IsActive);
     }
 }
