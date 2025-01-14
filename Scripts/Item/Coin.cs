@@ -20,17 +20,6 @@ public class Coin : PoolableObject
             Rotate();
     }
 
-    private void SetBeginState()
-    {
-        transform.rotation = _beginRotation;
-        _isRotating = true;
-    }
-
-    private void Rotate()
-    {
-        transform.Rotate(Vector3.forward * _speedRotation * Time.deltaTime);
-    }
-
     public void StopHolded()
     {
         transform.SetParent(_coinPoolContaner.transform);
@@ -48,5 +37,16 @@ public class Coin : PoolableObject
         _isRotating = false;
         transform.position = position;
         transform.rotation = _layRotation;
+    }
+
+    private void SetBeginState()
+    {
+        transform.rotation = _beginRotation;
+        _isRotating = true;
+    }
+
+    private void Rotate()
+    {
+        transform.Rotate(Vector3.forward * _speedRotation * Time.deltaTime);
     }
 }

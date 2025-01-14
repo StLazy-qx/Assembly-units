@@ -9,16 +9,6 @@ public class ObstacleMoveHandler : MonoBehaviour
     private float _maxAvoidanceDistance = 2f;
     private float _detectObstacleDistance = 1f;
 
-    private void PerformAvoidanceRotation(RaycastHit hit)
-    {
-        Vector3 obstacleNormal = hit.normal;
-        float angle = Vector3.SignedAngle(transform.forward,
-            obstacleNormal, Vector3.up);
-
-        transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y +
-            (angle >= 0 ? _angleRotation : -_angleRotation), 0);
-    }
-
     public void Init(Rigidbody rigidbody, float moveSpeed)
     {
         _rigidbody = rigidbody;
@@ -47,5 +37,15 @@ public class ObstacleMoveHandler : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private void PerformAvoidanceRotation(RaycastHit hit)
+    {
+        Vector3 obstacleNormal = hit.normal;
+        float angle = Vector3.SignedAngle(transform.forward,
+            obstacleNormal, Vector3.up);
+
+        transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y +
+            (angle >= 0 ? _angleRotation : -_angleRotation), 0);
     }
 }

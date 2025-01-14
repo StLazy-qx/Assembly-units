@@ -1,7 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Camera))]
-
 public class CameraOperator : MonoBehaviour
 {
     [SerializeField] private LayerMask _targetLayer;
@@ -13,34 +11,16 @@ public class CameraOperator : MonoBehaviour
     [SerializeField] private float _maxX = 30f;
     [SerializeField] private float _maxZ = 30f;
 
-    private Camera _mainCamera;
-
     private void Awake()
     {
-        _mainCamera = Camera.main;
-        _playerInput.MapCoinChecking += OnBaseCLick;
         _playerInput.HorizontalamCameraMoving += OnHorizontalInput;
         _playerInput.VerticalCameraMoving += OnVerticalInput;
     }
 
     private void OnDisable()
     {
-        _playerInput.MapCoinChecking -= OnBaseCLick;
         _playerInput.HorizontalamCameraMoving -= OnHorizontalInput;
         _playerInput.VerticalCameraMoving -= OnVerticalInput;
-    }
-
-    private void OnBaseCLick()
-    {
-        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
-        {
-            if (((1 << hitInfo.collider.gameObject.layer) & _targetLayer) != 0)
-            {
-                _base.PerformResourceSearch();
-            }
-        }
     }
 
     private void MoveCamera(Vector3 movement)

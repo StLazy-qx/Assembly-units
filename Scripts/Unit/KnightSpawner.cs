@@ -15,6 +15,22 @@ public class KnightSpawner : Spawner<Knight>
         OutputObjects();
     }
 
+    public void SendUnitToResource(Knight knight, Coin target)
+    {
+        if (knight.TryGetComponent(out KnightMover knightMover))
+        {
+            knightMover.GoToTarget(target);
+        }
+    }
+
+    public bool TryGetFreeUnit(out Knight knight)
+    {
+        knight = PoolObjects.GetListActiveObjects().
+            FirstOrDefault(knight => knight.IsBusy == false);
+
+        return knight != null;
+    }
+
     protected override void OutputObjects()
     {
         GenerateSpawnPoints();
@@ -46,26 +62,10 @@ public class KnightSpawner : Spawner<Knight>
     {
         foreach (Vector3 existingPoint in _spawnPoints)
         {
-            if (Vector3.Distance(existingPoint, point) < _distanceBetweenPoint)
+            if (existingPoint.IsEnoughClose(point, _distanceBetweenPoint))
                 return false;
         }
 
         return true;
-    }
-
-    public void SendUnitToResource(Knight knight, Coin target)
-    {
-        if (knight.TryGetComponent(out KnightMover knightMover))
-        {
-            knightMover.GoToTarget(target);
-        }
-    }
-
-    public bool TryGetFreeUnit(out Knight knight)
-    {
-        knight = PoolObjects.GetListActiveObjects().
-            FirstOrDefault(knight => knight.IsBusy == false);
-
-        return knight != null;
     }
 }

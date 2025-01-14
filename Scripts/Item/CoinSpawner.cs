@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class CoinSpawner : Spawner<Coin>
 {
-    [SerializeField] private ResourceHandler _resourceHandler;
     [SerializeField] private float _cooldown;
     [SerializeField] private Base _base;
     [SerializeField] private float _distanceAroundBase = 8f;
@@ -30,8 +29,7 @@ public class CoinSpawner : Spawner<Coin>
             Vector3 newPostion = new Vector3(spawnPosition.x,
                 _heightSpawned, spawnPosition.z);
 
-            Coin newCoin = PoolObjects.GetObject(newPostion);
-            _resourceHandler.EnqueueItem(newCoin);
+            PoolObjects.GetObject(newPostion);
         }
     }
 
@@ -47,7 +45,7 @@ public class CoinSpawner : Spawner<Coin>
 
     private bool IsValidPoint(Vector3 point)
     {
-        return (Vector3.Distance(_base.transform.position, point)
-            >= _distanceAroundBase);
+        return _base.transform.position.
+            IsEnoughClose(point, _distanceAroundBase) == false;
     }
 }

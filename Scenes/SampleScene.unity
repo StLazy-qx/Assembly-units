@@ -635,7 +635,6 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194230}
   - component: {fileID: 963194229}
-  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -751,19 +750,6 @@ MonoBehaviour:
   _minZ: -17
   _maxX: 30
   _maxZ: 30
---- !u!114 &963194231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 578b1c8718ce93e44a40cc6bf9ec8486, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _coinSpawner: {fileID: 1048646276}
 --- !u!1 &1048646274
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,7 +797,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolObjects: {fileID: 660740195}
   _spawnPlace: {fileID: 1511300770}
-  _resourceHandler: {fileID: 963194231}
   _cooldown: 2
   _base: {fileID: 2023523930}
   _distanceAroundBase: 8
@@ -932,7 +917,6 @@ GameObject:
   - component: {fileID: 1297140086}
   - component: {fileID: 1297140088}
   - component: {fileID: 1297140087}
-  - component: {fileID: 1297140089}
   m_Layer: 0
   m_Name: CoinCount
   m_TagString: Untagged
@@ -1056,18 +1040,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1297140085}
   m_CullTransparentMesh: 1
---- !u!114 &1297140089
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1297140085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: def47cda417180e48b38d991fa810fd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1313390251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1135,8 +1107,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281562242
-  m_fontColor: {r: 0.509434, g: 0.4550505, b: 0.1994482, a: 1}
+    rgba: 4279063958
+  m_fontColor: {r: 0.5882353, g: 0.33333334, b: 0.050980397, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1440,7 +1412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06ebb150b2886ba428dc6010ef7ca89b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _base: {fileID: 2023523930}
+  _scanner: {fileID: 2023523932}
   _textCoinFound: {fileID: 1424981936}
 --- !u!1001 &1470708761
 PrefabInstance:
@@ -1960,6 +1932,7 @@ GameObject:
   - component: {fileID: 2023523929}
   - component: {fileID: 2023523931}
   - component: {fileID: 2023523930}
+  - component: {fileID: 2023523932}
   m_Layer: 3
   m_Name: Base
   m_TagString: Base
@@ -2014,7 +1987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawner: {fileID: 2023523929}
-  _mapScanner: {fileID: 963194231}
+  _scanner: {fileID: 2023523932}
   _animator: {fileID: 1470708765}
 --- !u!114 &2023523931
 MonoBehaviour:
@@ -2028,6 +2001,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b94ca0b112f20d4baa418b03c2cc0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2023523932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023523927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 578b1c8718ce93e44a40cc6bf9ec8486, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _radius: 40
+  _interval: 2
 --- !u!1 &2030641381
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,6 +24,15 @@ public class KnightMover : MonoBehaviour
         _obstacleHandler.Init(_rigidbody, _moveSpeed);
     }
 
+    public void GoToTarget(Coin target)
+    {
+        if (_knight.IsBusy == false)
+        {
+            _knight.ToBusy();
+            StartCoroutine(MoveToTargetAndBack(target));
+        }
+    }
+
     private IEnumerator MoveToTargetAndBack(Coin coin)
     {
         yield return MoveToTarget(coin.transform.position);
@@ -82,14 +91,5 @@ public class KnightMover : MonoBehaviour
     {
         _rigidbody.MovePosition(transform.position +
             transform.forward * _moveSpeed * Time.deltaTime);
-    }
-
-    public void GoToTarget(Coin target)
-    {
-        if (_knight.IsBusy == false)
-        {
-            _knight.ToBusy();
-            StartCoroutine(MoveToTargetAndBack(target));
-        }
     }
 }

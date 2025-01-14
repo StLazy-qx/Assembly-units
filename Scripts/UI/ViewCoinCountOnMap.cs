@@ -4,7 +4,7 @@ using TMPro;
 
 public class ViewCoinCountOnMap : MonoBehaviour
 {
-    [SerializeField] private Base _base;
+    [SerializeField] private ResourceScanner _scanner;
     [SerializeField] private TMP_Text _textCoinFound;
 
     private Coroutine _fadeCoroutine;
@@ -22,15 +22,15 @@ public class ViewCoinCountOnMap : MonoBehaviour
 
     private void OnEnable()
     {
-        _base.ResourcesSearching += OnValueChack;
+        _scanner.ResourcesCounting += OnValueCheck;
     }
 
     private void OnDisable()
     {
-        _base.ResourcesSearching -= OnValueChack;
+        _scanner.ResourcesCounting -= OnValueCheck;
     }
 
-    private void OnValueChack(int value)
+    private void OnValueCheck(int value)
     {
         _textCoinFound.text = $"{value}";
 

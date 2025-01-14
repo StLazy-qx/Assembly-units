@@ -10,28 +10,12 @@ public class Pool<T> : MonoBehaviour where T : PoolableObject
 
     private List<T> _objectsPool = new List<T>();
 
+    public int Count => _objectsPool.Count;
+
     protected T Template => _template;
     protected List<T> ObjectsPool => _objectsPool;
     protected Transform Container => _container;
     protected int Capacity => _capacity;
-    public int Count => _objectsPool.Count;
-
-    protected virtual T CreateNewObject()
-    {
-        T newObject = Instantiate(_template, _container);
-
-        newObject.Deactivate();
-        _objectsPool.Add(newObject);
-
-        return newObject;
-    }
-
-    private void ActivateObject(T subject, Vector3 position)
-    {
-        subject.transform.position = position;
-
-        subject.Activate();
-    }
 
     public void Initialize()
     {
@@ -66,13 +50,25 @@ public class Pool<T> : MonoBehaviour where T : PoolableObject
         return tempList;
     }
 
-    public int CountActivatedObjects()
-    {
-        return _objectsPool.Count(subject => subject.IsActive);
-    }
-
     public bool IsAllObjectsActive()
     {
         return _objectsPool.All(subject => subject.IsActive);
+    }
+
+    protected virtual T CreateNewObject()
+    {
+        T newObject = Instantiate(_template, _container);
+
+        newObject.Deactivate();
+        _objectsPool.Add(newObject);
+
+        return newObject;
+    }
+
+    private void ActivateObject(T subject, Vector3 position)
+    {
+        subject.transform.position = position;
+
+        subject.Activate();
     }
 }
